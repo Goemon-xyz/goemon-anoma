@@ -1,0 +1,10 @@
+# Ignore Juvix build artifacts
+.juvix-build/
+.juvix-cache/
+
+# Ignore editor specific files
+.vscode/
+.idea/
+
+# Ignore build output
+_build/

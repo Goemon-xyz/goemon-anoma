@@ -1,0 +1,57 @@
+module GoemonIntent;
+
+import Stdlib.Prelude open;
+
+type DepositIntent :=
+  mkDeposit@{
+    chain : Nat;
+    asset : String;   -- Changed from Nat to String
+    amount : Nat;
+    recipient : String; -- Changed from Nat to String
+  };
+
+type WithdrawIntent :=
+  mkWithdraw@{
+    asset : String;
+    amount : Nat;
+    targetChain : Nat;
+    targetAddress : String;
+  };
+
+type OrderIntent :=
+  mkOrder@{
+    orderType : Nat;
+    asset : String;
+    amount : Nat;
+    price : Nat;
+  };
+
+showDepositIntent (d : DepositIntent) : String :=
+  "Chain: " ++str natToString (DepositIntent.chain d) ++str
+  ", Asset: " ++str DepositIntent.asset d ++str
+  ", Amount: " ++str natToString (DepositIntent.amount d) ++str
+  ", Recipient: " ++str DepositIntent.recipient d;
+
+showWithdrawIntent (w : WithdrawIntent) : String :=
+  "Asset: " ++str WithdrawIntent.asset w ++str
+  ", Amount: " ++str natToString (WithdrawIntent.amount w) ++str
+  ", Target Chain: " ++str natToString (WithdrawIntent.targetChain w) ++str
+  ", Target Address: " ++str WithdrawIntent.targetAddress w;
+
+showOrderIntent (o : OrderIntent) : String :=
+  "Order Type: " ++str natToString (OrderIntent.orderType o) ++str
+  ", Asset: " ++str OrderIntent.asset o ++str
+  ", Amount: " ++str natToString (OrderIntent.amount o) ++str
+  ", Price: " ++str natToString (OrderIntent.price o);
+
+deposit (d : DepositIntent) : DepositIntent := d;
+withdraw (w : WithdrawIntent) : WithdrawIntent := w;
+order (o : OrderIntent) : OrderIntent := o;
+
+main : IO := 
+  let myDeposit := deposit (mkDeposit @{chain := 1; asset := "ETH"; amount := 4; recipient := "0x123"}) in
+  let myWithdraw := withdraw (mkWithdraw @{asset := "ETH"; amount := 2; targetChain := 1; targetAddress := "0x456"}) in
+  let myOrder := order (mkOrder @{orderType := 1; asset := "BTC"; amount := 10; price := 50000}) in
+  printStringLn "Deposit Intent:" >>> printStringLn (showDepositIntent myDeposit) >>>
+  printStringLn "Withdraw Intent:" >>> printStringLn (showWithdrawIntent myWithdraw) >>>
+  printStringLn "Order Intent:" >>> printStringLn (showOrderIntent myOrder);
