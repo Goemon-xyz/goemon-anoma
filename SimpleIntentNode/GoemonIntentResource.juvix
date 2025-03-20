@@ -1,0 +1,96 @@
+module GoemonIntentResource;
+
+import Stdlib.Prelude open;
+import Applib open;
+
+-- Intent data types
+type DepositIntent :=
+  mkDeposit@{
+    chain : Nat;
+    asset : String;
+    amount : Nat;
+    recipient : String;
+  };
+
+type WithdrawIntent :=
+  mkWithdraw@{
+    asset : String;
+    amount : Nat;
+    targetChain : Nat;
+    targetAddress : String;
+  };
+
+type OrderIntent :=
+  mkOrder@{
+    orderType : Nat;
+    -- 1: Limit, 2: Market
+    side : Nat;
+    -- 1: Buy, 2: Sell
+    baseAsset : String;
+    quoteAsset : String;
+    amount : Nat;
+    price : Nat;
+    expiry : Nat;
+  -- Unix timestamp for order expiration
+  };
+
+-- Intent wrapper type to handle all intents
+type Intent :=
+  | Deposit DepositIntent
+  | Withdraw WithdrawIntent
+  | Order OrderIntent;
+
+-- A logic function that is always valid
+logic (publicInputs : Instance) (privateInputs : Witness) : Bool := true;
+
+-- Resource creation function
+mkIntentResource
+  (nonce : Nat) (intent : Intent) {ephemeral : Bool := false} : Resource :=
+  mkResource@{
+    label := builtinAnomaEncode intent;
+    logic;
+    value := 0;
+    quantity := 1;
+    nonce;
+    ephemeral;
+    randSeed := 0;
+    nullifierKeyCommitment := 0;
+  };
+
+-- Transaction creation function
+intentTransaction
+  {M : Type -> Type}
+  {{Monad M}}
+  {{Tx M}}
+  (nonce : Nat)
+  (intent : Intent)
+  : M Transaction :=
+  let
+    newResource := mkIntentResource nonce intent;
+  in prepareStandardTransaction@{
+       consumed := [newResource@Resource{ephemeral := true}];
+       created := [newResource];
+     };
+
+-- Create a transaction context
+ctx : TxContext :=
+  mkTxContext@{
+    caller := Universal.identity;
+    currentRoot := mkRoot 0;
+  };
+
+-- Main function that handles all transaction types
+main : TransactionRequest :=
+  -- Default deposit intent for compatibility
+  let
+    depositIntent :=
+      mkDeposit@{
+        chain := 1;
+        asset := "ETH";
+        amount := 4;
+        recipient := "0x123";
+      };
+  in buildTransactionRequest
+    0
+    ctx
+    (intentTransaction 0 (Deposit depositIntent));
