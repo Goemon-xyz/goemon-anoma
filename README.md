@@ -46,10 +46,12 @@ Future
 
 - Use solvers to aggregate liquidity across multiple dexes
  
-### Run Juvix code locally
+### Run Goemon POC node locally
 
 - Clone this repo and install Juvix 0.6.9-8b06157 and anoma node. Also install juvix extension in VS Code.
   
-- Run `juvix build` which installs and compiles all the dependencies.
-  
-- To compile the code and see output run `juvix compile GoemonIntent.juvix -o GoemonIntent` or click play button from extension which compiles and runs anoma code.
+- Change directory to node `cd SimpleIntentNode`
+
+- Follow the commands in makefile to test it.
+
+- Start anoma node with `make anoma-start` and run this to test all intents `make test-workflow`
