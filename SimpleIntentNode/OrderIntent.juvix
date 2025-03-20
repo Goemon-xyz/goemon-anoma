@@ -1,0 +1,20 @@
+module OrderIntent;
+
+import Stdlib.Prelude open;
+import Applib open;
+import GoemonIntentResource open;
+
+-- Create order intent with specific parameters
+main : TransactionRequest :=
+  let
+    orderIntent :=
+      mkOrder@{
+        orderType := 2;
+        side := 2;
+        baseAsset := "BTC";
+        quoteAsset := "USDT";
+        amount := 1;
+        price := 50000;
+        expiry := 1680000000;
+      };
+  in buildTransactionRequest 0 ctx (intentTransaction 0 (Order orderIntent));

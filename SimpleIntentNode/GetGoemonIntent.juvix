@@ -1,0 +1,15 @@
+module GetGoemonIntent;
+
+import Stdlib.Prelude open;
+import Applib open;
+import GoemonIntentResource open;
+
+-- Extract only the intent type without details
+main (resource : Resource) : String :=
+  let
+    encodedData : Intent := resource |> Resource.label |> builtinAnomaDecode;
+  in
+    case encodedData of
+      | Deposit _ := "DepositIntent"
+      | Withdraw _ := "WithdrawIntent" 
+      | Order _ := "OrderIntent";

@@ -1,0 +1,20 @@
+module WithdrawIntent;
+
+import Stdlib.Prelude open;
+import Applib open;
+import GoemonIntentResource open;
+
+-- Create withdraw intent with specific parameters
+main : TransactionRequest :=
+  let
+    withdrawIntent :=
+      mkWithdraw@{
+        asset := "BTC";
+        amount := 10;
+        targetChain := 2;
+        targetAddress := "0xDEF";
+      };
+  in buildTransactionRequest
+    0
+    ctx
+    (intentTransaction 0 (Withdraw withdrawIntent));

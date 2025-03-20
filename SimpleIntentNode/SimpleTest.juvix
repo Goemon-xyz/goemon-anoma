@@ -1,0 +1,46 @@
+module SimpleTest;
+
+import Stdlib.Prelude open;
+import Applib open;
+import GoemonIntentResource open;
+
+testDepositIntent : String :=
+  let
+    depositIntent := mkDeposit@{
+      chain := 1;
+      asset := "ETH";
+      amount := 10;
+      recipient := "0x123";
+    };
+    resource := mkIntentResource 0 (Deposit depositIntent);
+  in main resource;
+
+testWithdrawIntent : String :=
+  let
+    withdrawIntent := mkWithdraw@{
+      asset := "BTC";
+      amount := 5;
+      targetChain := 2;
+      targetAddress := "0x456";
+    };
+    resource := mkIntentResource 0 (Withdraw withdrawIntent);
+  in main resource;
+
+testOrderIntent : String :=
+  let
+    orderIntent := mkOrder@{
+      orderType := 1;
+      side := 1;
+      baseAsset := "BTC";
+      quoteAsset := "USDT";
+      amount := 1;
+      price := 50000;
+      expiry := 1680000000;
+    };
+    resource := mkIntentResource 0 (Order orderIntent);
+  in main resource;
+
+main := 
+  "Deposit test: " ++str testDepositIntent ++str "\n" ++str
+  "Withdraw test: " ++str testWithdrawIntent ++str "\n" ++str
+  "Order test: " ++str testOrderIntent;
